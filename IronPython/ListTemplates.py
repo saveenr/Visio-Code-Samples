@@ -15,7 +15,7 @@ ver_to_path = {
 
 def main() :
 
-    versions = [ "2013" ]
+    visio_version = "2013"
 
     # Load Visio and prepare to use it
     clr.AddReference("Microsoft.Office.Interop.Visio")
@@ -26,21 +26,20 @@ def main() :
     docs = visapp.Documents
     assert( 0 == docs.Count)
 
-    for visio_version in versions:    
     
-        stencil_path = System.IO.Path.Combine( ver_to_path[visio_version] , lang_to_id["en"] )
-        vst_files = System.IO.Directory.GetFiles(stencil_path,"*.vst*")
-           
-        for vst_file in vst_files:
-            
-            doc = docs.Open( System.IO.Path.Combine( stencil_path, vst_file) )
+    stencil_path = System.IO.Path.Combine( ver_to_path[visio_version] , lang_to_id["en"] )
+    vst_files = System.IO.Directory.GetFiles(stencil_path,"*.vst*")
+       
+    for vst_file in vst_files:
+        
+        doc = docs.Open( System.IO.Path.Combine( stencil_path, vst_file) )
 
-            for d in docs :
-                tokens  = [ ("Visio"+ visio_version) , doc.Name, doc.Title, d.Name, d.Title ]
-                line = "|".join(tokens)
-                print line
+        for d in docs :
+            tokens  = [ ("Visio"+ visio_version) , doc.Name, doc.Title, d.Name, d.Title ]
+            line = "|".join(tokens)
+            print line
 
-            doc.Close()
+        doc.Close()
         
     # Once done, close visio
     visapp.Quit()

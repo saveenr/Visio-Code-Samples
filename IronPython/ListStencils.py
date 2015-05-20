@@ -13,16 +13,16 @@ lang_to_id = {
 
 ver_to_path = {
                "2007" : r"C:\Program Files (x86)\Microsoft Office\Office12",
-               "2010" : r"C:\Program Files (x86)\Microsoft Office\Office14\Visio Content"
-               }
+               "2010" : r"C:\Program Files (x86)\Microsoft Office\Office14\Visio Content",
+               "2013" : r"C:\Program Files\Microsoft Office 15\root\office15\Visio Content" }
 
 def main() :
-    visio_version = "2010"
-    print_masters = True
+    
+    visio_version = "2013"
 
     stencil_path = System.IO.Path.Combine( ver_to_path[visio_version] , lang_to_id["en"] )
-    vss_files = System.IO.Directory.GetFiles(stencil_path,"*.vss")
-    vst_files = System.IO.Directory.GetFiles(stencil_path,"*.vst")
+    vss_files = System.IO.Directory.GetFiles(stencil_path,"*.vss*")
+    vst_files = System.IO.Directory.GetFiles(stencil_path,"*.vst*")
 
     vst_dic = {}
     vss_dic = {}
@@ -51,11 +51,10 @@ def main() :
 
     for vss_file, vst_file in pairs:
         stencildoc = docs.OpenEx( vss_file , flags )
-        if (not print_masters) :
-            print vss_file , "|", vst_file, "|", stencildoc.Title
-        else:
-            for master in stencildoc.Masters :
-                print vss_file , "|", vst_file, "|", stencildoc.Title , "|", master.Name 
+        for master in stencildoc.Masters :
+            tokens = [ ( "Visio" + visio_version ) , vss_file , vst_file, stencildoc.Title , master.Name ]
+            line = "|".join( tokens )
+            print line
         stencildoc.Close()
     
     # Once done, close visio
